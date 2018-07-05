@@ -60,7 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
     LE_speed=new QLineEdit;
     LE_speed->setText(QString("Fluid flow [mkl/sec]: 0.05"));
 
-    qstr=QString("COM8");
+
+    qstr=QString("COM5");
     LE_COM->setText(qstr);
 
     int frame_width=4;
@@ -68,6 +69,11 @@ MainWindow::MainWindow(QWidget *parent) :
     GL->addWidget(LE_COM,0/frame_width,0%frame_width);
     GL->addWidget(LE_speed,0,1);
     GL->addWidget(ON_BTN,1,0);
+
+     LE_speed->setDisabled(true);
+    ON_BTN->setDisabled(true);
+    return_BTN->setDisabled(true);
+
     GL->addWidget(return_BTN,1,1);
     //    GL->setRowMinimumHeight(2,400);
     GL->setColumnMinimumWidth(2,160);
@@ -142,7 +148,10 @@ void MainWindow::buttonClicked(int i)
     case 6:
         hSerial.write((uint8_t)(6));
         setStyleSheet(stand_str+run_str);
-        run_timer->start(4000);
+        on=1;
+        buttonClicked(4);
+        run_timer->start(10000);
+//        timer->stop();
         break;
     }
 }
@@ -162,13 +171,16 @@ void MainWindow::setSpeed()
         LE_speed->setText(QString("Fluid flow [mkl/sec]: 0.05"));
     //    qDebug()<<QString::number(0.1);
     speed=LE_speed->text().remove(0,21).toFloat();
-    if(speed==0) speed=0.0005;
+    qDebug()<<speed;
+    if(speed==0) speed=0.01;
     //    timer->start(100);
-    float k=250;
+    float k=440;
     int I=k/speed;
     if(I==0)I=1;
     float s2=k/I;
     LE_speed->setText(LE_speed->text().remove(22,40)+QString::number(s2));
+    if(!timer->isActive())
+        timer->start();
     timer->setInterval(I);
 }
 
@@ -182,6 +194,11 @@ void MainWindow::waitCOM_Subm()
     connect(timer, SIGNAL(timeout()), this, SLOT(send()));
     hSerial.write((uint8_t)(40));
     LE_COM->setDisabled(true);
+
+
+    LE_speed->setDisabled(0);
+   ON_BTN->setDisabled(0);
+   return_BTN->setDisabled(0);
     //    buttonClicked(4);
 }
 
@@ -191,12 +208,12 @@ void MainWindow::send()
     //    if(on)
     {
 
-        if(sendVal==1)
-            sendVal=0;
-        else
-            sendVal=1;
-        qDebug()<<"hello";
-        hSerial.write(sendVal);
+//        if(sendVal==1)
+//            sendVal=0;
+//        else
+//            sendVal=1;
+//        qDebug()<<"hello";
+        hSerial.write(0);
     }
 }
 
@@ -238,6 +255,7 @@ MainWindow::~MainWindow()
 void MainWindow::change_pict()
 {
     setStyleSheet(stand_str+(strh));
+//    timer->start();
 }
 
 void whitening(QWidget* w)

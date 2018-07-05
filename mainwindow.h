@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 #include "headers.h"
 #include <QMainWindow>
-
+#include"serial.h"
 
 class MainWindow : public QMainWindow
 {
