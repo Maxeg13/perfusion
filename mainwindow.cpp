@@ -146,6 +146,10 @@ void MainWindow::buttonClicked(int i)
         }
         break;
     case 6:
+        on=1;
+        ON_BTN->setText("on");
+        hSerial.write((uint8_t)(40));
+        setStyleSheet(stand_str+(strh=neitral));
         hSerial.write((uint8_t)(6));
         setStyleSheet(stand_str+run_str);
 
