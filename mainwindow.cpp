@@ -148,9 +148,10 @@ void MainWindow::buttonClicked(int i)
     case 6:
         hSerial.write((uint8_t)(6));
         setStyleSheet(stand_str+run_str);
-        on=1;
-        buttonClicked(4);
-        run_timer->start(10000);
+
+//        buttonClicked(4);
+//        on=1;
+        run_timer->start(4000);
 //        timer->stop();
         break;
     }
